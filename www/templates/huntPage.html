@@ -1,6 +1,15 @@
-<ion-view view-title="huntPage">
+<ion-view view-title="huntPage" ng-controller="HuntPageCtrl">
   <ion-content>
     <h1>The Hunt is On</h1>
+    <button class="button button-icon" ng-click="newJob()">
+        <i class="icon ion-compose"></i>
+      </button>
+    <ion-list>
+      <ion-item ng-repeat="job in jobs">
+        {{job.company}}
+        {{job.id}}
+      </ion-item>
+    </ion-list>
 
     <div class="card">
       <div class="item item-divider">
@@ -14,3 +23,32 @@
     </div>
   </ion-content>
 </ion-view>
+<script id="new-job.html" type="text/ng-template">
+
+  <div class="modal">
+
+    <!-- Modal header bar -->
+    <ion-header-bar class="bar-secondary">
+      <h1 class="title">New Job</h1>
+      <button class="button button-clear button-positive" ng-click="closeNewJob()">Cancel</button>
+    </ion-header-bar>
+
+    <!-- Modal content area -->
+    <ion-content>
+
+      <form ng-submit="createJob(job)">
+        <div class="list">
+          <label class="item item-input">
+            <input type="text" placeholder="Company Name" ng-model="job.company">
+          </label>
+        </div>
+        <div class="padding">
+          <button type="submit" class="button button-block button-positive">Create Task</button>
+        </div>
+      </form>
+
+    </ion-content>
+
+  </div>
+
+</script>

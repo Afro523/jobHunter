@@ -53,4 +53,33 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
+})
+
+.controller('HuntPageCtrl', function($scope, $ionicModal){
+  // Create and load the Modal
+  $ionicModal.fromTemplateUrl('new-job.html', function(modal) {
+    $scope.jobModal = modal;
+  }, {
+    scope: $scope,
+    animation: 'slide-in-up'
+  });
+
+  // Called when the form is submitted
+  $scope.createJob = function(task) {
+    $scope.jobs.push({
+      company: job.company
+    });
+    $scope.taskModal.hide();
+    job.company = "";
+  };
+
+  // Open our new task modal
+  $scope.newJob = function() {
+    $scope.jobModal.show();
+  };
+
+  // Close the new task modal
+  $scope.closeNewJob = function() {
+    $scope.jobModal.hide();
+  };
 });
