@@ -73,7 +73,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     url: '/huntPage',
     views: {
       'menuContent': {
-        templateUrl: 'templates/huntPage.html'
+        templateUrl: 'templates/huntPage.html',
+        controller: 'HuntPageCtrl'
       }
     }
   });
