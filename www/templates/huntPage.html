@@ -10,17 +10,6 @@
         {{job.id}}
       </ion-item>
     </ion-list>
-
-    <div class="card">
-      <div class="item item-divider">
-        Company : JP-Morgan Chase
-      </div>
-      <div class="item item-text-wrap">
-        <p> Date Applied To: </p>
-        <p> Job Title: </p>
-        <p> Followed Up: </p>
-      </div>
-    </div>
   </ion-content>
 </ion-view>
 <script id="new-job.html" type="text/ng-template">
@@ -40,13 +29,15 @@
         <div class="list">
           <label class="item item-input">
             <input type="text" placeholder="Company Name" ng-model="job.company">
+            <!--  TO BE ADDED
             <input type="text" placeholder="Job Title/Position" ng-model="job.title">
             <input type="date" ng-model="job.applyDate">
             <input type="date" ng-model="job.followDate">
+          -->
           </label>
         </div>
         <div class="padding">
-          <button type="submit" class="button button-block button-positive">Create Task</button>
+          <button type="submit" class="button button-block button-positive">Create Job</button>
         </div>
       </form>
 

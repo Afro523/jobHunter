@@ -56,6 +56,8 @@ angular.module('starter.controllers', [])
 })
 
 .controller('HuntPageCtrl', function($scope, $ionicModal){
+  $scope.jobs = [];
+
   // Create and load the Modal
   $ionicModal.fromTemplateUrl('new-job.html', function(modal) {
     $scope.jobModal = modal;
@@ -65,11 +67,11 @@ angular.module('starter.controllers', [])
   });
 
   // Called when the form is submitted
-  $scope.createJob = function(task) {
+  $scope.createJob = function(job) {
     $scope.jobs.push({
       company: job.company
     });
-    $scope.taskModal.hide();
+    $scope.jobModal.hide();
     job.company = "";
   };
 
