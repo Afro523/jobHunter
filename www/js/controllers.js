@@ -1,87 +1,112 @@
-angular.module('starter.controllers', [])
+angular.module('jobHunter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  // Form data for the login modal
-  $scope.loginData = {};
-
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
-
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
-
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
-
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
 })
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
+.factory('Jobs', function() {
+  return {
+    all: function() {
+      var jobString = window.localStorage['jobs'];
+      if(jobString) {
+        return angular.fromJson(jobString);
+      }
+      return [];
+    },
+    save: function(jobs) {
+      window.localStorage['jobs'] = angular.toJson(jobs);
+    },
+    newJob: function(companyName) {
+      // Add a new project
+      return {
+        company: companyName,
+      };
+    },
+    getLastActiveIndex: function() {
+      return parseInt(window.localStorage['lastActiveJob']) || 0;
+    },
+    setLastActiveIndex: function(index) {
+      window.localStorage['lastActiveJob'] = index;
+    }
+  }
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})
+.controller('HuntPageCtrl', function($scope, $timeout, $ionicModal, Jobs, $ionicSideMenuDelegate) {
 
-.controller('HuntPageCtrl', function($scope, $ionicModal){
-  $scope.jobs = [];
+  // A utility function for creating a new project
+  // with the given projectTitle
+  var createJob = function(companyName) {
+    var newJob = Jobs.newJob(companyName);
+    $scope.jobs.push(newJob);
+    Jobs.save($scope.jobs);
+    $scope.selectJob(newJob, $scope.jobs.length-1);
+  }
 
-  // Create and load the Modal
+
+  // Load or initialize projects
+  $scope.jobs = Jobs.all();
+
+  // Grab the last active, or the first job
+  $scope.activeJob = $scope.jobs[Jobs.getLastActiveIndex()];
+
+  // Called to create a new job
+  $scope.newJob = function() {
+    var companyName = prompt('Company Name');
+    if(companyName) {
+      createJob(companyName);
+    }
+  };
+
+  // Called to select the given project
+  $scope.selectJob = function(job, index) {
+    $scope.activeJob = job;
+    Jobs.setLastActiveIndex(index);
+    $ionicSideMenuDelegate.toggleLeft(false);
+  };
+
+  // Create our modal
   $ionicModal.fromTemplateUrl('new-job.html', function(modal) {
     $scope.jobModal = modal;
   }, {
-    scope: $scope,
-    animation: 'slide-in-up'
+    scope: $scope
   });
 
-  // Called when the form is submitted
-  $scope.createJob = function(job) {
-    $scope.jobs.push({
+  $scope.createTask = function(job) {
+    if(!$scope.companyName || !job) {
+      return;
+    }
+    $scope.Jobs.push({
       company: job.company
     });
     $scope.jobModal.hide();
+
+    // Inefficient, but save all the projects
+    Projects.save($scope.jobs);
+
     job.company = "";
   };
 
-  // Open our new task modal
   $scope.newJob = function() {
     $scope.jobModal.show();
   };
 
-  // Close the new task modal
   $scope.closeNewJob = function() {
     $scope.jobModal.hide();
   };
+
+
+  // Try to create the first project, make sure to defer
+  // this by using $timeout so everything is initialized
+  // properly
+  $timeout(function() {
+    if($scope.jobs.length == 0) {
+      while(true) {
+        var companyName = prompt('Your first applied to:');
+        if(companyName) {
+          createJob(companyName);
+          break;
+        }
+      }
+    }
+  }, 1000);
+
 });
