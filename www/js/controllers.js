@@ -70,13 +70,16 @@ angular.module('jobHunter.controllers', [])
     scope: $scope
   });
 
-  $scope.createTask = function(job) {
+  $scope.createJob = function(job) {
+    console.log("HI");
+    console.log($scope.job.company);
     if(!$scope.companyName || !job) {
       return;
     }
     $scope.Jobs.push({
       company: job.company
     });
+
     $scope.jobModal.hide();
 
     // Inefficient, but save all the projects
